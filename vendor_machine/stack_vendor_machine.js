@@ -49,14 +49,19 @@ module.exports = {
                     }
 
                     for (i=0; i < perLane; i += 1) {
-                        stacks[sodaName][i] = sodaName + i;
+                        stacks[sodaName][i] = sodaName + '-' + i;
                     }
                 }
             });
         };
 
         getMoney = function (money) {
+            if (!money) {
+                return;
+            }
+
             payment += money;
+            console.log("Coin inserted " + money/100 + ", total: " + payment/100);
             if (payment >= price) {
                 state = states.waiting_order;
             }
@@ -64,8 +69,8 @@ module.exports = {
 
         giveChange = function () {
             var change = 0;
-            
-            if (state === states.giving_change) {
+
+            if (payment > price) {
                 change = payment - price;
             }
 
@@ -82,13 +87,12 @@ module.exports = {
 
                 if (stacks[sodaName].length > 0) {
                     ret.soda = stacks[sodaName].pop();
-                    
-                    if (payment > price) {
-                        state = states.giving_change;
-                        ret.change = giveChange();
-                    }
 
-                    state = states.getting_payment;
+                    state      = states.giving_change;
+                    ret.change = giveChange();
+
+                    payment = 0;
+                    state   = states.getting_payment;
                 } else {
                     console.log('We ran out of ' + sodaName + ', please select other soda');
                     state = states.waiting_order;

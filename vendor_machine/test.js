@@ -4,29 +4,37 @@ var machine = require('./stack_vendor_machine').create({ price : 375 }),
 
 machine.fill(sodas);
 
-function purchase1() {
+function purchase() {
     var money = 0,
         availableSodas = machine.readSodaMenu(),
-        soda = availableSodas[Math.round(Math.random() * 100) % availableSodas.length],
+        soda,
         coin,
-        res;
+        res = {};
 
     // Pay
     while(money < machine.readPrice()) {
         coin = coinDenominations[Math.round(Math.random() * 100) % coinDenominations.length];
         money += coin;
-        console.log("Coin ", coin/100);
-        console.log("Money ", money/100);
-
         machine.insertCoin(coin);
     }
 
-    res = machine.orderSoda(soda);
-    console.log("You asked for " + soda);
-    console.log("You get " + res.soda);
+    while(!res.soda) {
+        soda = availableSodas[Math.round(Math.random() * 100) % availableSodas.length];
+        console.log("You asked for " + soda);
+        res = machine.orderSoda(soda);
+    }
+
+    if (res.soda) {
+        console.log("You get " + res.soda);
+    }
     console.log("You paid " + money/100);
     console.log("Price is " + machine.readPrice()/100);
-    console.log("Your change is " + res.change/100);
+    if (res.change) {
+        console.log("Your change is " + (res.change === 0 ? 0 : res.change/100), res.change);
+    }
 };
 
-purchase1();
+for (var i = 0; i < 30; i++) {
+    console.log("\nCustomer " + i);
+    purchase();
+}
