@@ -20,9 +20,11 @@ module.exports = {
             state   = states.getting_payment,
             machine = {};
 
-        // Semantics
+        // Internal Functions
         var readPrice,
+            readSodaMenu,
             getMoney,
+            giveChange,
             fillSodasStack,
             getSoda;
 
@@ -31,23 +33,24 @@ module.exports = {
         };
 
         readSodaMenu = function () {
-            return Object.keys(sodaStacks);
+            return Object.keys(stacks);
         };
 
         fillSodasStack = function (sodas) {
             sodas.forEach(function (sodaName) {
                 var i = 0;
 
-                if (!sodaStacks[sodaName] && choices >= lanes) {
+                if (!stacks[sodaName] && choices >= lanes) {
                     console.log(sodaName + ' can not be added');
                 } else {
-                    if (!sodaStacks[sodaName]){
+                    if (!stacks[sodaName]){
+                        stacks[sodaName] = [];
                         choices += 1;
                     }
 
-                    do {
-                        sodaStacks[sodaName][i] = sodaName + i;
-                    } while (i < perLane);
+                    for (i=0; i < perLane; i += 1) {
+                        stacks[sodaName][i] = sodaName + i;
+                    }
                 }
             });
         };
@@ -60,47 +63,48 @@ module.exports = {
         };
 
         giveChange = function () {
-            var change = 0,
-                ret;
+            var change = 0;
             
             if (state === states.giving_change) {
-                change = money - price;
-                ret = 'Your change is ' + change;
+                change = payment - price;
             }
 
             state = states.getting_payment;
 
-            return ret;
+            return change;
         };
 
         getSoda = function (sodaName) {
-            var ret;
+            var ret = {};
 
             if (state === states.waiting_order) {
                 state = states.delivering_soda;
 
-                if (sodaStacks[sodaName].length > 0) {
-                    ret = sodaStacks[sodaName].pop();
+                if (stacks[sodaName].length > 0) {
+                    ret.soda = stacks[sodaName].pop();
                     
-                    if (money > price) {
+                    if (payment > price) {
                         state = states.giving_change;
-                        giveChange();
+                        ret.change = giveChange();
                     }
 
                     state = states.getting_payment;
                 } else {
-                    ret = 'We ran out of ' + sodaName + ', please select other soda';
+                    console.log('We ran out of ' + sodaName + ', please select other soda');
                     state = states.waiting_order;
                 }
             } else {
-                ret = 'You still need to pay $' + price - money + ' more'. 
+                console.log('You still need to pay $' + (price - payment) + ' more.');
             }
+
+            return ret;
         };
 
+        // Semantics
         machine = {
             readPrice: readPrice,
             readSodaMenu: readSodaMenu,
-            fillSodasStack : fillSodasStack,
+            fill : fillSodasStack,
             insertCoin : getMoney,
             orderSoda : getSoda
         };
