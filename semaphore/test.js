@@ -1,9 +1,12 @@
-var resource = '',
-    // semaphore = require('./boolean_semaphore').create();
-    // semaphore = require('./counting_semaphore').create();
-    semaphore = require('./counting_semaphore2').create();
+// Uncomment the semaphore you want to use
+// Comment the rest of the semaphores.
 
-var useResource;
+var resource = '',
+    semaphore = require('./boolean_semaphore').create(),
+    // semaphore = require('./counting_semaphore').create(),
+    // semaphore = require('./counting_semaphore2').create(),
+    useResource,
+    createProcess;
 
 useResource = function (value, done) {
     'use strict';
@@ -12,7 +15,7 @@ useResource = function (value, done) {
     setTimeout(function () {
         done();
     }, 1000);
-}
+};
 
 createProcess = function (id) {
     'use strict';
@@ -34,22 +37,18 @@ createProcess = function (id) {
                 console.log("Released resource");
                 setTimeout(run, 250 * locks);
             });
-        }
-        else {
+        } else {
             console.log(name + " failed to lock resource because its locked: ", resource);
             setTimeout(run, 300);
         }
-    }
+    };
 
     proc.run = run;
 
     return proc;
 };
 
-var proc1 = createProcess(1),
-    proc2 = createProcess(2),
-    proc3 = createProcess(3);
-
-proc1.run();
-proc2.run();
-proc3.run();
+// Create and start procs
+createProcess(1).run();
+createProcess(2).run();
+createProcess(3).run();

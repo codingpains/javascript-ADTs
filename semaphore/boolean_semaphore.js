@@ -1,5 +1,6 @@
 module.exports = {
-    create : function createSemaphore() {
+    create: function createSemaphore() {
+        'use strict';
         var lockResource,
             releaseResource,
             semaphore,
@@ -8,8 +9,7 @@ module.exports = {
         lockResource = function () {
             if (isResourceBusy === true) {
                 return false;
-            }
-            else {
+            } else {
                 isResourceBusy = true;
                 return true;
             }
@@ -20,8 +20,8 @@ module.exports = {
         };
 
         semaphore = {
-            wait : lockResource,
-            signal : releaseResource
+            wait: lockResource,
+            signal: releaseResource
         };
 
         return semaphore;
