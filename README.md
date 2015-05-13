@@ -18,7 +18,7 @@ An Abstract Data Type is formally defined as "a class of abstract objects which 
 
 In my own words, I would define an ADT as "An invisible set of data that can only be accessed by operations". I think that making explicit that the data is practically invisible is very important, this will force us to think in terms of the operations. The design and implementation of ADT's is strictly focused on its operations giving emphasis to observers and the fact that as a consumer or user of an ADT you will never see the internal data structure, that is where the abstraction magic happens: If the data structure changes, no matter how drastically, all the users of the ADT will not even notice it.
 
-## Strengths.
+### Strengths of ADTS.
 * Allows to ignore implementation details, if the data structure inside the ADT changes we just have modify its use in one place.
 * Changes and additions don't affect the whole program, extending the functionality of an ADT or change its behavior does not affect other portions of the program.
 * Make the code more readable and self-documenting.
