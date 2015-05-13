@@ -2,21 +2,34 @@
 
 ## Abstract
 
-This paper recovers concepts from the past exploring Abstract Data Types (ADTs) and Object Oriented Programming (OOP) previoulsy known as Procedural Data Types (PDT) and puts them in context with JavaScript, pointing out the differences, strengths, weaknesses of both of them and how they can work indiviually and together to create expressive and solid solutions to programming problems.
+This paper recovers concepts from Abstract Data Types (ADTs) and Object Oriented Programming (OOP) previoulsy known as Procedural Data Types (PDT), pointing out the differences, strengths, weaknesses of each one of them and how they can work indiviually and together to create expressive and solid solutions to programming problems. It focuses on Javascript, being a languaje where everything is an object that supports multi-paradigm, mainly object-oriented programming and functional programming.
 
 ## Introduction.
 
-The rationale for working in High Level Languages is to make our job as programmers easier, we should be empowered to solve problems in the correct domain without having to go deep into the logic of computers to express our solutions. We can say that we are efficient programmers when we maximize the portion of a program while we are working on other portion, in other words, if we make good abstractions so that we can solve problems in a domain that is one layer above of such abstraction then we are going in the right way.
+The rationale for working in High Level Languages is to make our job as programmers easier, we should be empowered to solve problems in the correct domain without having to go deep into the logic of computers to express our solutions. We can say that we are efficient programmers when we maximize the portion of a program that we can ignore while we are working on other portion. In other words, if we make good abstractions then we can solve problems in a domain that is one layer above of such abstraction making things clearer and easier.
 
-The concepts of OOP have been around since the late 1950s, they were not very popular and it wasn't until the work of Alan Kay in the development of the Smalltalk language brought back to life these concepts and coined the term "object oriented programming" around 1972-76. At that time, the most popular style of programming was the structured programming style that enfored "well structured programs". In 1974 Barbara Liskov and Stephen Zilles presented their paper called "Programming With Abstract Data Types" [1], in it they presented a concept of what is an Abstract Data Type and how programmers should use the concept to reduce complexity of a program while improving its correctness and readability.
+The concepts of OOP have been around since the late 1950s, they were not very popular until the work of Alan Kay and the development of the Smalltalk language brought back to life these concepts and coined the term "object oriented programming", that happened during 1972-76. At that time, the most popular style of programming was the structured programming, it enforces "well structured programs". In 1974 Barbara Liskov and Stephen Zilles presented their paper "Programming With Abstract Data Types" [1], in it they presented a new concept: the Abstract Data Type, and how programmers should use this concept to reduce complexity of a program while improving its correctness and readability.
 
-More than a decade later years later another good paper was written by William R. Cook called Object-Oriented Programming versus Abstract Data Types [2]. In it, he points its differences which are most of the times hard to see, specially when working at high levels of abtraction.
+More than a decade later another good paper was written by William R. Cook called "Object-Oriented Programming versus Abstract Data Types" [2]. In it, he points its differences which are most of the times hard to see, specially when working at high levels of abtraction and makes clear the use cases for both of them we well as their weaknesses and strengths.
 
 ## Abstract Data Type.
 
-An Abstract Data Type is formally defined as "a class of abstract objects which is completely characterized by the operations available on those objects" [1]. By Cooks ideas, I can infer a definition that would go somethig like "An object defined by its operations". Cook says that the operations available in any ADT are of two types: constructors and observers. The easy translation for that is that constructors are the operations that create and/or modify data and the observers are the operations that make possible reading the current state of the data.
+An Abstract Data Type is formally defined as "a class of abstract objects which is completely characterized by the operations available on those objects" [1]. By reading Cook's ideas, It can inferred a definition that would go somethig like "An ADT is an object defined by its operations" which is basically a re-wording of the formal definition. Cook says that the operations available in any ADT are of two types: constructors and observers. Constructors are the operations that create and/or modify data and the observers are the operations that make possible reading the current state of the data.
 
-In my own words, I would define an ADT as "An invisible set of data that can only be accessed by operations". The design and implementation of ADT's is strictly focused on its operations giving emphasis to its observers and in the fact that as a consumer or user of an ADT you will never see the internal data structure, that is where the abstraction magic happens: If the data structure changes, no matter how drastically, all the users of the ADT will not even notice it.
+In my own words, I would define an ADT as "An invisible set of data that can only be accessed by operations". I think that making explicit that the data is practically invisible is very important, this will force us to think in terms of the operations. The design and implementation of ADT's is strictly focused on its operations giving emphasis to observers and the fact that as a consumer or user of an ADT you will never see the internal data structure, that is where the abstraction magic happens: If the data structure changes, no matter how drastically, all the users of the ADT will not even notice it.
+
+## Strengths.
+* Allows to ignore implementation details, if the data structure inside the ADT changes we just have modify its use in one place.
+* Changes and additions don't affect the whole program, extending the functionality of an ADT or change its behavior does not affect other portions of the program.
+* Make the code more readable and self-documenting.
+* The program becomes more obvioulsy correct.
+
+	Is a lot easier to know that `currentFont.setBoldOn()` is the operation we want to execute than `currentFont.attribute = 0x02`
+	
+* You are able to work with representations of real world entities.
+
+	Work with `Students` instead of `StudentsList`or `StudentsTable`. Don't let users know the internal implementation.
+
 
 ## Object-Oriented Programming.
 
