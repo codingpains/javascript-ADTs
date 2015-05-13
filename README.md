@@ -45,7 +45,7 @@ Even when ADT's are concepts of computing, we can have a better understanding by
 
 A wrist watch is a perfect example of an ADT. Inside it has a complex engine with wheels that we wouldn't be able to understand, however in the outside it gives a nice interface of needles that point at numbers or symbols. If we want to set a new time, it has a useful pin called crown that allows us to do just that.
 
-If instead of having this engine, we had a direct connection to the God Chronos, we wouln't notice.
+If instead of having this engine, we had a direct connection to the god Chronos, we wouln't notice.
 
 ### Vending Machine.
 
@@ -72,3 +72,5 @@ Each folder has one or many implementations of ADTs using Javascript (NodeJS) an
 ## References
 
 [1.] [Programming with Abstract Data Types](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.136.3043&rep=rep1&type=pdf)
+
+[2.] [Object Oriented PRogramming versus Abstract Data Types](http://www.cs.utexas.edu/users/wcook/papers/OOPvsADT/CookOOPvsADT90.pdf)
