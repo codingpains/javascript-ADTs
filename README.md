@@ -10,13 +10,13 @@ The rationale for working in High Level Languages is to make our job as programm
 
 The concepts of OOP have been around since the late 1950s, they were not very popular until the work of Alan Kay and the development of the Smalltalk language brought back to life these concepts and coined the term "object oriented programming", that happened during 1972-76. At that time, the most popular style of programming was the structured programming, it enforces "well structured programs". In 1974 Barbara Liskov and Stephen Zilles presented their paper "Programming With Abstract Data Types" [1], in it they presented a new concept: the Abstract Data Type, and how programmers should use this concept to reduce complexity of a program while improving its correctness and readability.
 
-More than a decade later another good paper was written by William R. Cook called "Object-Oriented Programming versus Abstract Data Types" [2]. In it, he points its differences which are most of the times hard to see, specially when working at high levels of abtraction and makes clear the use cases for both of them we well as their weaknesses and strengths.
+More than a decade later another good paper was written by William R. Cook called "Object-Oriented Programming versus Abstract Data Types" [2]. In it, he points its differences which are most of the times hard to see, specially when working at high levels of abtraction and makes clear the use cases for both of them as well as their weaknesses and strengths.
 
 ## Abstract Data Type.
 
 An Abstract Data Type is formally defined as "a class of abstract objects which is completely characterized by the operations available on those objects" [1]. By reading Cook's ideas, It can inferred a definition that would go somethig like "An ADT is an object defined by its operations" which is basically a re-wording of the formal definition. Cook says that the operations available in any ADT are of two types: constructors and observers. Constructors are the operations that create and/or modify data and the observers are the operations that make possible reading the current state of the data.
 
-In my own words, I would define an ADT as "An invisible set of data that can only be accessed by operations". I think that making explicit that the data is practically invisible is very important, this will force us to think in terms of the operations. The design and implementation of ADT's is strictly focused on its operations giving emphasis to observers and the fact that as a consumer or user of an ADT you will never see the internal data structure, that is where the abstraction magic happens: If the data structure changes, no matter how drastically, all the users of the ADT will not even notice it.
+In my own words, I would define an ADT as "An invisible set of data that can only be accessed by operations". I think is very important making explicit that the data is invisible, this will force us to think in terms of the operations. The design and implementation of ADT's is strictly focused on its operations giving emphasis to observers and the fact that as a consumer or user of an ADT you will never see the internal data structure, that is where the abstraction magic happens: If the data structure changes, no matter how drastically, all the users of the ADT will not even notice it.
 
 ### Strengths of ADTS.
 * Allows to ignore implementation details, if the data structure inside the ADT changes we just have modify its use in one place.
@@ -45,7 +45,7 @@ Even when ADT's are concepts of computing, we can have a better understanding by
 
 A wrist watch is a perfect example of an ADT. Inside it has a complex engine with wheels that we wouldn't be able to understand, however in the outside it gives a nice interface of needles that point at numbers or symbols. If we want to set a new time, it has a useful pin called crown that allows us to do just that.
 
-If instead of having this engine, we had a direct connection to the god Chronos, we wouln't notice.
+If instead of having this engine, we had a direct connection to the god Chronos, we wouldn't notice.
 
 ### Vending Machine.
 
@@ -74,3 +74,5 @@ Each folder has one or many implementations of ADTs using Javascript (NodeJS) an
 [1.] [Programming with Abstract Data Types](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.136.3043&rep=rep1&type=pdf)
 
 [2.] [Object Oriented PRogramming versus Abstract Data Types](http://www.cs.utexas.edu/users/wcook/papers/OOPvsADT/CookOOPvsADT90.pdf)
+
+[3.] [Code Complete](http://www.amazon.com/Code-Complete-Practical-Handbook-Construction/dp/0735619670)
