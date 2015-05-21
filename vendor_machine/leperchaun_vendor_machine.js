@@ -1,7 +1,7 @@
 // Assume sodas are filled manually, replenishing the sold sodas
 // and leaving the unsold ones.
 
-var createVendorMachine = function createVendorMachine() {
+var createVendorMachine = function () {
     'use strict';
     // Values and data structure
     var states  = {
@@ -11,11 +11,11 @@ var createVendorMachine = function createVendorMachine() {
             giving_change   : 3
         },
         payment = 0,
-        stacks  = {},
+        icebox  = {},
         lanes   = 5,
         choices = 0,
-        perLane = 8,
-        price   = 350,
+        perSoda = 10,
+        price   = 300,
         state   = states.getting_payment,
         machine = {};
 
@@ -25,8 +25,22 @@ var createVendorMachine = function createVendorMachine() {
         readSodaMenu,
         getMoney,
         giveChange,
-        fillSodasStack,
-        getSoda;
+        fillIcebox,
+        getSoda,
+        leperchaun = {
+            getSoda : function (icebox, sodaName) {
+                var ret,
+                    index;
+
+                if (icebox[sodaName].length > 0) {
+                    index = Math.floor((Math.random() * 10000) % icebox[sodaName].length);
+                    ret = icebox[sodaName].splice(index, 1)[0];
+                }
+
+                return ret;
+            }
+        };
+
 
     setPrice = function (value) {
         price = value;
@@ -37,23 +51,23 @@ var createVendorMachine = function createVendorMachine() {
     };
 
     readSodaMenu = function () {
-        return Object.keys(stacks);
+        return Object.keys(icebox);
     };
 
-    fillSodasStack = function (sodas) {
+    fillIcebox = function (sodas) {
         sodas.forEach(function (sodaName) {
             var i = 0;
 
-            if (!stacks[sodaName] && choices >= lanes) {
+            if (!icebox[sodaName] && choices >= lanes) {
                 console.log(sodaName + ' can not be added');
             } else {
-                if (!stacks[sodaName]){
-                    stacks[sodaName] = [];
+                if (!icebox[sodaName]){
+                    icebox[sodaName] = [];
                     choices += 1;
                 }
 
-                for (i=0; i < perLane; i += 1) {
-                    stacks[sodaName][i] = sodaName + '-' + i;
+                for (i=0; i < perSoda; i += 1) {
+                    icebox[sodaName][i] = sodaName + '-' + i;
                 }
             }
         });
@@ -89,9 +103,9 @@ var createVendorMachine = function createVendorMachine() {
         if (state === states.waiting_order) {
             state = states.delivering_soda;
 
-            if (stacks[sodaName].length > 0) {
-                ret.soda = stacks[sodaName].pop();
+            ret.soda = leperchaun.getSoda(icebox, sodaName);
 
+            if (ret.soda) {
                 state      = states.giving_change;
                 ret.change = giveChange();
 
@@ -110,15 +124,14 @@ var createVendorMachine = function createVendorMachine() {
 
     // Semantics
     machine = {
-        setPrice : setPrice,
         readPrice: readPrice,
+        setPrice : setPrice,
         readSodaMenu: readSodaMenu,
-        fill : fillSodasStack,
+        fill : fillIcebox,
         insertCoin : getMoney,
         orderSoda : getSoda
     };
 
     return machine;
 };
-
 module.exports = createVendorMachine();

@@ -1,7 +1,9 @@
-var machine = require('./stack_vendor_machine').create({ price : 375 }),
+var machine = require('./stack_vendor_machine'),
+//var machine = require('./leperchaun_vendor_machine'),
     coinDenominations = [5, 10, 25, 50, 100],
     sodas = ['Coke', 'Sprite', 'Dr. pepper', 'Diet Coke'];
 
+machine.setPrice(375);
 machine.fill(sodas);
 
 function purchase() {
@@ -34,7 +36,7 @@ function purchase() {
     }
 };
 
-for (var i = 0; i < 30; i++) {
+for (var i = 1; i <= 30; i++) {
     console.log("\nCustomer " + i);
     purchase();
 }
