@@ -17,6 +17,14 @@ Game = {
     }
 }
 
+var turnOn = function (light) {
+    light.visible = true;
+};
+
+var turnOff = function (light) {
+    light.visible = false;
+};
+
 Crafty.scene('SemaphoreDemo', function () {
     var entityAttrs = {
             car1 : {
@@ -35,9 +43,10 @@ Crafty.scene('SemaphoreDemo', function () {
             }
         },
         car1,
-        car2;
+        car2,
+        mapBuilder;
 
-        var mapBuilder = Crafty.e("2D, Canvas, TiledMapBuilder").setMapDataSource(mapsrc);
+        mapBuilder = Crafty.e("2D, Canvas, TiledMapBuilder").setMapDataSource(mapsrc);
 
         mapBuilder.createWorld(function (map){
             var lights = [];
@@ -58,21 +67,35 @@ Crafty.scene('SemaphoreDemo', function () {
                 sem.z = 4;
             });
 
+            Crafty.bind('horizontal-go', function () {
+                entities.vStopLights.forEach(turnOn);
+                entities.vGreenLights.forEach(turnOff);
+
+                entities.hStopLights.forEach(turnOff);
+                entities.hGreenLights.forEach(turnOn);
+            });
+
+            Crafty.bind('vertical-go', function () {
+                entities.vStopLights.forEach(turnOff);
+                entities.vGreenLights.forEach(turnOn);
+
+                entities.hStopLights.forEach(turnOn);
+                entities.hGreenLights.forEach(turnOff);
+            });
+
+            car1 = Crafty.e('carH, Car, car_h');
+            car1.attr(entityAttrs.car1)
+                .setDirection('horizontal')
+                .setSemaphore(semaphore)
+                .startMoving();
+
+            car2 = Crafty.e('carV, Car, car_v');
+                car2.attr(entityAttrs.car2)
+                    .setDirection('vertical')
+                    .setSemaphore(semaphore)
+                    .startMoving();
+
+            entities.car1 = car1;
+            entities.car2 = car2;
         });
-
-        car1 = Crafty.e('carH, Car, car_h');
-        car1.attr(entityAttrs.car1)
-            .setDirection('horizontal')
-            .setSemaphore(semaphore)
-            .startMoving();
-
-        car2 = Crafty.e('carV, Car, car_v');
-        car2.attr(entityAttrs.car2)
-            .setDirection('vertical')
-            .setSemaphore(semaphore)
-            .startMoving();
-
-        entities.car1 = car1;
-        entities.car2 = car2;
-
 });

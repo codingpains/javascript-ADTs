@@ -13111,6 +13111,7 @@ Crafty.c('Car', {
             }
             else {
                 if (this.canGo) {
+                    Crafty.trigger(this.direction + '-go');
                     if (this.direction === 'horizontal') {
                         moveRight.call(this);
                     }
@@ -13975,6 +13976,14 @@ Game = {
     }
 }
 
+var turnOn = function (light) {
+    light.visible = true;
+};
+
+var turnOff = function (light) {
+    light.visible = false;
+};
+
 Crafty.scene('SemaphoreDemo', function () {
     var entityAttrs = {
             car1 : {
@@ -13993,9 +14002,10 @@ Crafty.scene('SemaphoreDemo', function () {
             }
         },
         car1,
-        car2;
+        car2,
+        mapBuilder;
 
-        var mapBuilder = Crafty.e("2D, Canvas, TiledMapBuilder").setMapDataSource(mapsrc);
+        mapBuilder = Crafty.e("2D, Canvas, TiledMapBuilder").setMapDataSource(mapsrc);
 
         mapBuilder.createWorld(function (map){
             var lights = [];
@@ -14016,22 +14026,36 @@ Crafty.scene('SemaphoreDemo', function () {
                 sem.z = 4;
             });
 
+            Crafty.bind('horizontal-go', function () {
+                entities.vStopLights.forEach(turnOn);
+                entities.vGreenLights.forEach(turnOff);
+
+                entities.hStopLights.forEach(turnOff);
+                entities.hGreenLights.forEach(turnOn);
+            });
+
+            Crafty.bind('vertical-go', function () {
+                entities.vStopLights.forEach(turnOff);
+                entities.vGreenLights.forEach(turnOn);
+
+                entities.hStopLights.forEach(turnOn);
+                entities.hGreenLights.forEach(turnOff);
+            });
+
+            car1 = Crafty.e('carH, Car, car_h');
+            car1.attr(entityAttrs.car1)
+                .setDirection('horizontal')
+                .setSemaphore(semaphore)
+                .startMoving();
+
+            car2 = Crafty.e('carV, Car, car_v');
+                car2.attr(entityAttrs.car2)
+                    .setDirection('vertical')
+                    .setSemaphore(semaphore)
+                    .startMoving();
+
+            entities.car1 = car1;
+            entities.car2 = car2;
         });
-
-        car1 = Crafty.e('carH, Car, car_h');
-        car1.attr(entityAttrs.car1)
-            .setDirection('horizontal')
-            .setSemaphore(semaphore)
-            .startMoving();
-
-        car2 = Crafty.e('carV, Car, car_v');
-        car2.attr(entityAttrs.car2)
-            .setDirection('vertical')
-            .setSemaphore(semaphore)
-            .startMoving();
-
-        entities.car1 = car1;
-        entities.car2 = car2;
-
 });
 },{"./asset_loader":32,"./boolean_semaphore":33,"./car":34,"./citymap.js":35,"./lib/create_mocks_module":36,"./lib/tiledmapbuilder":37,"craftyjs":11}]},{},[38]);

@@ -54,6 +54,7 @@ Crafty.c('Car', {
             }
             else {
                 if (this.canGo) {
+                    Crafty.trigger(this.direction + '-go');
                     if (this.direction === 'horizontal') {
                         moveRight.call(this);
                     }
