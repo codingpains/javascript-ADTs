@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="19" height="19" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="Street" tilewidth="32" tileheight="32">
+  <image source="../../assets/img/street.png" trans="ff00ff" width="800" height="608"/>
+ </tileset>
+ <tileset firstgid="476" name="grass" tilewidth="32" tileheight="32">
+  <image source="../../assets/img/grass.png" trans="ff00ff" width="640" height="640"/>
+ </tileset>
+ <tileset firstgid="876" name="Buildings" tilewidth="32" tileheight="32">
+  <image source="../../assets/img/building.png" trans="ff00ff" width="256" height="256"/>
+ </tileset>
+ <tileset firstgid="940" name="trees" tilewidth="32" tileheight="32">
+  <image source="../../assets/img/trees.png" trans="ff00ff" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="1020" name="objects" tilewidth="32" tileheight="32">
+  <image source="../../assets/img/objects.png" trans="ff00ff" width="256" height="256"/>
+ </tileset>
+ <layer name="landscape" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJzbysjAsBUL3gbEUgwMDNJIWAaIt+BQjw8jm8VCRbNG3YXA53Dg8zjcdRaPHiYG3FgazV3SeNQyodlLDSxLgDYjUh01sQkejC288Kmfw4gdz8URj7NxqAfhe1jwMwLp6w4OfbgwvnTPwoTAn4H8LySYhe4uZLPYgZiDiTrugmFquItUs4h1FwB6WJR0
+  </data>
+ </layer>
+ <layer name="entities" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYGBgqGFmYKhFwnVAjA/kMOPW0wKkW5FwGwGzQOa0o+npgOrpAdK9SLiPgFkgc/rR9Ewg06x+Kpo1HY9ZU4D0VCQ8jYBZMPOQzZpBhJ5RMDTAJmBcbmbGpMnRsweI92Kh8QFi9ZDiLkKAFHcRAsPRXQBkskPA
+  </data>
+ </layer>
+ <layer name="semaphores" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFtAR/malnFisL9cwSpaJZIwHIUDG8VKholsloPA57AADaPAGj
+  </data>
+ </layer>
+ <layer name="h-stop-lights" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUEAL6LNQzy5yKZo2C4Q8ABW8Abw==
+  </data>
+ </layer>
+ <layer name="v-stop-lights" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFtAR6LNQzy4yKZo2CUTAKhgYAAMEjAG0=
+  </data>
+ </layer>
+ <layer name="h-green-lights" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AU0BNosgy0C0bBUAIAaBAALg==
+  </data>
+ </layer>
+ <layer name="v-green-lights" width="19" height="19">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFQwVosAy0C0bBKBgF9AYAtEAALQ==
+  </data>
+ </layer>
+</map>
