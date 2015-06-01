@@ -23,10 +23,11 @@ moveDown = function () {
 }
 
 Crafty.c('Car', {
-    canGo     : null,
-    shouldTry : null,
-    loopCount : 0,
-    semaphore : 0,
+    canGo       : null,
+    shouldTry   : null,
+    loopStarted : false,
+    loopCount   : 0,
+    semaphore   : 0,
 
     init : function(args) {
         this.canGo     = false;
@@ -47,39 +48,51 @@ Crafty.c('Car', {
     },
 
     startMoving : function() {
-        this.bind('EnterFrame', function () {
-            if (this.loopCount === 4) {
-                this.stop();
-                this.loopCount = 0;
-            }
-            else {
-                if (this.canGo) {
-                    Crafty.trigger(this.direction + '-go');
-                    if (this.direction === 'horizontal') {
-                        moveRight.call(this);
+        if (this.loopStarted === false) {
+            this.bind('EnterFrame', function () {
+                if (this.loopCount === 4) {
+                    this.stop();
+                    this.loopCount = 0;
+                }
+                else {
+                    if (this.canGo) {
+                        Crafty.trigger(this.direction + '-go');
+                        if (this.direction === 'horizontal') {
+                            moveRight.call(this);
+                        }
+                        else if (this.direction === 'vertical') {
+                            moveDown.call(this);
+                        }
                     }
-                    else if (this.direction === 'vertical') {
-                        moveDown.call(this);
+                    else if (this.shouldTry && this.semaphore.wait() === true) {
+                        this.canGo = true;
                     }
                 }
-                else if (this.shouldTry && this.semaphore.wait() === true) {
-                    this.canGo = true;
-                }
-            }
-        });
+            });
+            this.loopStarted = true;
+        }
     },
 
     stop : function() {
-        var car = this;
+        if (this.loopStarted === true) {
+            var car = this;
 
-        this.canGo     = false;
-        this.shouldTry = false;
+            this.canGo     = false;
+            this.loopCount = 0;
+            this.shouldTry = false;
 
-        this.semaphore.signal();
+            this.semaphore.signal();
+            if (this.direction === 'horizontal') {
+                this.x = 0;
+            }
+            else {
+                this.y = 0;
+            }
 
-        setTimeout(function () {
-            car.shouldTry = true;
-        }, 1000);
+            setTimeout(function () {
+                car.shouldTry = true;
+            }, 1000);
+        }
 
         return this;
     }

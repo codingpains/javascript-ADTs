@@ -1,0 +1,18 @@
+body {
+    background: #21748B;
+}
+
+#content {
+    padding : 20px 0;
+}
+
+#game {
+    border : 2px solid #BBB07C;
+}
+
+#semaphores_selection .panel-heading {
+    color : #363A38;
+    font-size: 1.6em;
+    text-align: center;
+    text-shadow: -1px -1px 1px #fff;
+}

@@ -13000,6 +13000,46 @@ Crafty.extend({
 });
 
 },{"./core.js":10}],32:[function(require,module,exports){
+module.exports = {
+    create: function createSemaphore(resourceCount) {
+        'use strict';
+        var lockResource,
+            releaseResource,
+            semaphore,
+            availableResources = [],
+            i = 0;
+
+        if (resourceCount === undefined) {
+            resourceCount = 0;
+        }
+
+        do {
+            availableResources.push(1);
+        } while (i < resourceCount);
+
+
+        lockResource = function () {
+            if (availableResources.length === 0) {
+                return false;
+            } else {
+                availableResources.pop();
+                return true;
+            }
+        };
+
+        releaseResource = function () {
+            availableResources.push(1);
+        };
+
+        semaphore = {
+            wait: lockResource,
+            signal: releaseResource
+        };
+
+        return semaphore;
+    }
+};
+},{}],33:[function(require,module,exports){
 var assetsObj = {
     'sprites': {
         'img/yellowcar.png': {
@@ -13024,7 +13064,7 @@ Crafty.load(assetsObj, function (err, data) {
     console.log('done', err, data)
 });
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = {
     create: function createSemaphore() {
         'use strict';
@@ -13054,7 +13094,7 @@ module.exports = {
         return semaphore;
     }
 };
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 require('craftyjs');
 
 var moveRight,
@@ -13080,10 +13120,11 @@ moveDown = function () {
 }
 
 Crafty.c('Car', {
-    canGo     : null,
-    shouldTry : null,
-    loopCount : 0,
-    semaphore : 0,
+    canGo       : null,
+    shouldTry   : null,
+    loopStarted : false,
+    loopCount   : 0,
+    semaphore   : 0,
 
     init : function(args) {
         this.canGo     = false;
@@ -13104,44 +13145,56 @@ Crafty.c('Car', {
     },
 
     startMoving : function() {
-        this.bind('EnterFrame', function () {
-            if (this.loopCount === 4) {
-                this.stop();
-                this.loopCount = 0;
-            }
-            else {
-                if (this.canGo) {
-                    Crafty.trigger(this.direction + '-go');
-                    if (this.direction === 'horizontal') {
-                        moveRight.call(this);
+        if (this.loopStarted === false) {
+            this.bind('EnterFrame', function () {
+                if (this.loopCount === 4) {
+                    this.stop();
+                    this.loopCount = 0;
+                }
+                else {
+                    if (this.canGo) {
+                        Crafty.trigger(this.direction + '-go');
+                        if (this.direction === 'horizontal') {
+                            moveRight.call(this);
+                        }
+                        else if (this.direction === 'vertical') {
+                            moveDown.call(this);
+                        }
                     }
-                    else if (this.direction === 'vertical') {
-                        moveDown.call(this);
+                    else if (this.shouldTry && this.semaphore.wait() === true) {
+                        this.canGo = true;
                     }
                 }
-                else if (this.shouldTry && this.semaphore.wait() === true) {
-                    this.canGo = true;
-                }
-            }
-        });
+            });
+            this.loopStarted = true;
+        }
     },
 
     stop : function() {
-        var car = this;
+        if (this.loopStarted === true) {
+            var car = this;
 
-        this.canGo     = false;
-        this.shouldTry = false;
+            this.canGo     = false;
+            this.loopCount = 0;
+            this.shouldTry = false;
 
-        this.semaphore.signal();
+            this.semaphore.signal();
+            if (this.direction === 'horizontal') {
+                this.x = 0;
+            }
+            else {
+                this.y = 0;
+            }
 
-        setTimeout(function () {
-            car.shouldTry = true;
-        }, 1000);
+            setTimeout(function () {
+                car.shouldTry = true;
+            }, 1000);
+        }
 
         return this;
     }
 });
-},{"craftyjs":11}],35:[function(require,module,exports){
+},{"craftyjs":11}],36:[function(require,module,exports){
 var mapSource = { "height":19,
  "layers":[
         {
@@ -13316,7 +13369,41 @@ var mapSource = { "height":19,
 };
 
 module.exports = mapSource;
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
+module.exports = {
+    create: function createSemaphore(resourceCount) {
+        'use strict';
+        var lockResource,
+            releaseResource,
+            semaphore,
+            availableResources = 1;
+
+        if (resourceCount) {
+            availableResources = resourceCount;
+        }
+
+        lockResource = function () {
+            if (availableResources <= 0) {
+                return false;
+            } else {
+                availableResources -= 1;
+                return true;
+            }
+        };
+
+        releaseResource = function () {
+            availableResources += 1;
+        };
+
+        semaphore = {
+            wait: lockResource,
+            signal: releaseResource
+        };
+
+        return semaphore;
+    }
+};
+},{}],38:[function(require,module,exports){
 onmessage = function(e) {
 	MockModule.init(e.data.startRow, e.data.startColumn, e.data.viewWidth, e.data.viewHeight, e.data.renderMethod, e.data.source);		
 	postMessage(MockModule.createMockEntities());   
@@ -13534,7 +13621,7 @@ MockModule = {
 	},
 };
 
-},{}],37:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 /**@
 * #TiledMapBuilder
 * @category Graphics
@@ -13956,7 +14043,7 @@ Crafty.c("TiledMapBuilder", {
 });
 
 
-},{}],38:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 require('craftyjs');
 require('./car');
 require('./asset_loader');
@@ -13965,9 +14052,13 @@ require('./lib/tiledmapbuilder');
 
 entities = {};
 
-var semaphore = require('./boolean_semaphore').create(),
+var semaphores = {
+        bool  : require('./boolean_semaphore').create(),
+        count : require('./counting_semaphore').create(),
+        arr   : require('./array_semaphore').create(),
+    },
+    semaphore = semaphores.bool,
     mapsrc = require('./citymap.js');
-
 
 Game = {
     start : function() {
@@ -14042,20 +14133,33 @@ Crafty.scene('SemaphoreDemo', function () {
                 entities.hGreenLights.forEach(turnOff);
             });
 
-            car1 = Crafty.e('carH, Car, car_h');
-            car1.attr(entityAttrs.car1)
-                .setDirection('horizontal')
-                .setSemaphore(semaphore)
-                .startMoving();
-
-            car2 = Crafty.e('carV, Car, car_v');
-                car2.attr(entityAttrs.car2)
-                    .setDirection('vertical')
+            Crafty.bind('semaphore-change', function(data) {
+                console.log('Semaphore change ', data);
+                Crafty.pause();
+                semaphore.signal();
+                semaphore = semaphores[data.type];
+                
+                entities.car1
+                    .stop()
                     .setSemaphore(semaphore)
                     .startMoving();
+
+                entities.car2
+                    .stop()
+                    .setSemaphore(semaphore)
+                    .startMoving();
+
+                Crafty.pause();
+            });
+
+            car1 = Crafty.e('carH, Car, car_h');
+            car1.attr(entityAttrs.car1).setDirection('horizontal');
+
+            car2 = Crafty.e('carV, Car, car_v');
+            car2.attr(entityAttrs.car2).setDirection('vertical');
 
             entities.car1 = car1;
             entities.car2 = car2;
         });
 });
-},{"./asset_loader":32,"./boolean_semaphore":33,"./car":34,"./citymap.js":35,"./lib/create_mocks_module":36,"./lib/tiledmapbuilder":37,"craftyjs":11}]},{},[38]);
+},{"./array_semaphore":32,"./asset_loader":33,"./boolean_semaphore":34,"./car":35,"./citymap.js":36,"./counting_semaphore":37,"./lib/create_mocks_module":38,"./lib/tiledmapbuilder":39,"craftyjs":11}]},{},[40]);

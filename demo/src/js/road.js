@@ -6,9 +6,12 @@ require('./lib/tiledmapbuilder');
 
 entities = {};
 
-var semaphore = require('./boolean_semaphore').create(),
+var semaphores = {
+        bool  : require('./boolean_semaphore'),
+        count : require('./counting_semaphore'),
+        arr   : require('./array_semaphore'),
+    },
     mapsrc = require('./citymap.js');
-
 
 Game = {
     start : function() {
@@ -83,17 +86,30 @@ Crafty.scene('SemaphoreDemo', function () {
                 entities.hGreenLights.forEach(turnOff);
             });
 
-            car1 = Crafty.e('carH, Car, car_h');
-            car1.attr(entityAttrs.car1)
-                .setDirection('horizontal')
-                .setSemaphore(semaphore)
-                .startMoving();
-
-            car2 = Crafty.e('carV, Car, car_v');
-                car2.attr(entityAttrs.car2)
-                    .setDirection('vertical')
+            Crafty.bind('semaphore-change', function(data) {
+                console.log('Semaphore change ', data);
+                Crafty.pause();
+                semaphore.signal();
+                semaphore = semaphores[data.type];
+                
+                entities.car1
+                    .stop()
                     .setSemaphore(semaphore)
                     .startMoving();
+
+                entities.car2
+                    .stop()
+                    .setSemaphore(semaphore)
+                    .startMoving();
+
+                Crafty.pause();
+            });
+
+            car1 = Crafty.e('carH, Car, car_h');
+            car1.attr(entityAttrs.car1).setDirection('horizontal');
+
+            car2 = Crafty.e('carV, Car, car_v');
+            car2.attr(entityAttrs.car2).setDirection('vertical');
 
             entities.car1 = car1;
             entities.car2 = car2;

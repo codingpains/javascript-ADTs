@@ -1,10 +1,33 @@
 <html>
-  <head></head>
-  <body>
-    <div id="game"></div>
+  <head>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
     <script type="text/javascript" src="/js/road.js"></script>
+    <script type="text/javascript" src="/js/ui.js"></script>
+  </head>
+  <body>
+
+    <section id="content">
+        <div class="container">
+            <div class="col-md-6">
+                <div id="game" style="float: left"></div>
+            </div>
+            <div class="col-md-5 col-md-offset-1">
+                <div class="panel panel-default" id="semaphores_selection">
+                  <div class="panel-heading">Select the type of semaphore</div>
+                  <div class="panel-body">
+                  </div>
+                </div>
+
+            </div>
+        </div>  
+    </section>
+    
     <script>
         window.addEventListener('load', Game.start);
+        window.addEventListener('load', UI.render);
     </script>
   </body>
 </html>
