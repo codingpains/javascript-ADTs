@@ -13006,6 +13006,7 @@ module.exports = {
         var lockResource,
             releaseResource,
             semaphore,
+            maxResources = 1,
             availableResources = [],
             i = 0;
 
@@ -13015,6 +13016,7 @@ module.exports = {
 
         do {
             availableResources.push(1);
+            i++;
         } while (i < resourceCount);
 
 
@@ -13028,12 +13030,20 @@ module.exports = {
         };
 
         releaseResource = function () {
-            availableResources.push(1);
+            if (maxResources > availableResources.length) {
+                availableResources.push(1);
+            }
         };
 
         semaphore = {
             wait: lockResource,
-            signal: releaseResource
+            signal: releaseResource,
+            getInternalState : function () {
+                if (availableResources.length > 0) {
+                    return 'Array semaphore: ' + availableResources.length + ' available resources';
+                }
+                return 'Array semaphore: No available resources';
+            }
         };
 
         return semaphore;
@@ -13088,7 +13098,14 @@ module.exports = {
 
         semaphore = {
             wait: lockResource,
-            signal: releaseResource
+            signal: releaseResource,
+            getInternalState : function () {
+                if (isResourceBusy) {
+                    return 'Boolean semaphore: No available resources';
+
+                }
+                return 'Boolean semaphore: 1 available resource';
+            }
         };
 
         return semaphore;
@@ -13145,11 +13162,13 @@ Crafty.c('Car', {
     },
 
     startMoving : function() {
+        var car = this;
         if (this.loopStarted === false) {
             this.bind('EnterFrame', function () {
                 if (this.loopCount === 4) {
-                    this.stop();
-                    this.loopCount = 0;
+                    this.stop(function () {
+                        car.loopCount = 0;
+                    });
                 }
                 else {
                     if (this.canGo) {
@@ -13162,6 +13181,7 @@ Crafty.c('Car', {
                         }
                     }
                     else if (this.shouldTry && this.semaphore.wait() === true) {
+                        Crafty.trigger('semaphore-state', this.semaphore.getInternalState());
                         this.canGo = true;
                     }
                 }
@@ -13179,6 +13199,8 @@ Crafty.c('Car', {
             this.shouldTry = false;
 
             this.semaphore.signal();
+            Crafty.trigger('semaphore-state', this.semaphore.getInternalState());
+
             if (this.direction === 'horizontal') {
                 this.x = 0;
             }
@@ -13190,7 +13212,6 @@ Crafty.c('Car', {
                 car.shouldTry = true;
             }, 1000);
         }
-
         return this;
     }
 });
@@ -13376,9 +13397,11 @@ module.exports = {
         var lockResource,
             releaseResource,
             semaphore,
+            maxResources = 1,
             availableResources = 1;
 
         if (resourceCount) {
+            maxResources = resourceCount;
             availableResources = resourceCount;
         }
 
@@ -13392,12 +13415,20 @@ module.exports = {
         };
 
         releaseResource = function () {
-            availableResources += 1;
+            if (maxResources > availableResources) {
+                availableResources += 1;
+            }
         };
 
         semaphore = {
             wait: lockResource,
-            signal: releaseResource
+            signal: releaseResource,
+            getInternalState : function () {
+                if (availableResources > 0) {
+                    return 'Counting semaphore: ' + availableResources + ' available resources';
+                }
+                return 'Counting semaphore: No available resources';
+            }
         };
 
         return semaphore;
@@ -14053,11 +14084,11 @@ require('./lib/tiledmapbuilder');
 entities = {};
 
 var semaphores = {
-        bool  : require('./boolean_semaphore').create(),
-        count : require('./counting_semaphore').create(),
-        arr   : require('./array_semaphore').create(),
+        bool  : require('./boolean_semaphore'),
+        count : require('./counting_semaphore'),
+        arr   : require('./array_semaphore'),
     },
-    semaphore = semaphores.bool,
+    semaphore = {signal : function() {}},
     mapsrc = require('./citymap.js');
 
 Game = {
@@ -14137,10 +14168,9 @@ Crafty.scene('SemaphoreDemo', function () {
                 console.log('Semaphore change ', data);
                 Crafty.pause();
                 semaphore.signal();
-                semaphore = semaphores[data.type];
+                semaphore = semaphores[data.type].create();
                 
-                entities.car1
-                    .stop()
+                entities.car1.stop()
                     .setSemaphore(semaphore)
                     .startMoving();
 

@@ -28,11 +28,15 @@ var addListeners = function () {
         .bind('activate', function() {
             Crafty.trigger('semaphore-change', {type : 'arr'});
         });
+
+    Crafty.bind('semaphore-state', function (message) {
+        $('#semaphores_selection .internal-state').text('> ' + message);
+    });
 };
 
 window.UI = {
     render : function () {
-        var buttonsPanel = $('#semaphores_selection .panel-body'),
+        var buttonsPanel = $('#semaphores_selection .buttons-container'),
             booleanAttrs = {
                 name  : 'booleanSemaphoreBtn',
                 label : 'Boolean Semaphore'

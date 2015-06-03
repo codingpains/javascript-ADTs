@@ -4,6 +4,7 @@ module.exports = {
         var lockResource,
             releaseResource,
             semaphore,
+            maxResources = 1,
             availableResources = [],
             i = 0;
 
@@ -13,6 +14,7 @@ module.exports = {
 
         do {
             availableResources.push(1);
+            i++;
         } while (i < resourceCount);
 
 
@@ -26,12 +28,20 @@ module.exports = {
         };
 
         releaseResource = function () {
-            availableResources.push(1);
+            if (maxResources > availableResources.length) {
+                availableResources.push(1);
+            }
         };
 
         semaphore = {
             wait: lockResource,
-            signal: releaseResource
+            signal: releaseResource,
+            getInternalState : function () {
+                if (availableResources.length > 0) {
+                    return 'Array semaphore: ' + availableResources.length + ' available resources';
+                }
+                return 'Array semaphore: No available resources';
+            }
         };
 
         return semaphore;

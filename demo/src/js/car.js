@@ -48,11 +48,13 @@ Crafty.c('Car', {
     },
 
     startMoving : function() {
+        var car = this;
         if (this.loopStarted === false) {
             this.bind('EnterFrame', function () {
                 if (this.loopCount === 4) {
-                    this.stop();
-                    this.loopCount = 0;
+                    this.stop(function () {
+                        car.loopCount = 0;
+                    });
                 }
                 else {
                     if (this.canGo) {
@@ -65,6 +67,7 @@ Crafty.c('Car', {
                         }
                     }
                     else if (this.shouldTry && this.semaphore.wait() === true) {
+                        Crafty.trigger('semaphore-state', this.semaphore.getInternalState());
                         this.canGo = true;
                     }
                 }
@@ -82,6 +85,8 @@ Crafty.c('Car', {
             this.shouldTry = false;
 
             this.semaphore.signal();
+            Crafty.trigger('semaphore-state', this.semaphore.getInternalState());
+
             if (this.direction === 'horizontal') {
                 this.x = 0;
             }
@@ -93,7 +98,6 @@ Crafty.c('Car', {
                 car.shouldTry = true;
             }, 1000);
         }
-
         return this;
     }
 });

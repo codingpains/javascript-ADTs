@@ -16,3 +16,14 @@ body {
     text-align: center;
     text-shadow: -1px -1px 1px #fff;
 }
+
+#semaphores_selection .internal-state {
+    font-size : 1.3em;
+    font-family: monospace;
+    margin : 10px 0;
+    padding : 40px 20px;
+    color : #23D143;
+    background: #000;
+    border-right: 2px solid #ededed;
+    border-bottom: 2px solid #ededed;
+}

@@ -11,6 +11,7 @@ var semaphores = {
         count : require('./counting_semaphore'),
         arr   : require('./array_semaphore'),
     },
+    semaphore = {signal : function() {}},
     mapsrc = require('./citymap.js');
 
 Game = {
@@ -90,10 +91,9 @@ Crafty.scene('SemaphoreDemo', function () {
                 console.log('Semaphore change ', data);
                 Crafty.pause();
                 semaphore.signal();
-                semaphore = semaphores[data.type];
+                semaphore = semaphores[data.type].create();
                 
-                entities.car1
-                    .stop()
+                entities.car1.stop()
                     .setSemaphore(semaphore)
                     .startMoving();
 

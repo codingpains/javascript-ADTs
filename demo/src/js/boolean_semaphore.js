@@ -21,7 +21,14 @@ module.exports = {
 
         semaphore = {
             wait: lockResource,
-            signal: releaseResource
+            signal: releaseResource,
+            getInternalState : function () {
+                if (isResourceBusy) {
+                    return 'Boolean semaphore: No available resources';
+
+                }
+                return 'Boolean semaphore: 1 available resource';
+            }
         };
 
         return semaphore;
